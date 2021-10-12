@@ -5,6 +5,30 @@ import config
 API_URL = 'https://dynamicdns.park-your-domain.com/update'
 
 
+class Host:
+  HOSTS = []
+
+  def __init__(self, *, domain, subdomain):
+    self.domain = domain
+    self.subdomain = subdomain
+
+    self.__class__.HOSTS.append(self)
+
+
+class Domain:
+  DOMAINS = []
+
+  def __init__(self, *, name, password, subdomains):
+    self.name = name
+    self.password = password
+
+    self.hosts = [
+      Host(domain=self, subdomain=subdomain) for subdomain in subdomains
+    ]
+
+    self.__class__.DOMAINS.append(self)
+
+
 class HostUpdater:
   class DnsUpdateError(RuntimeError):
     '''Something prevented the DNS update from succeeding.'''
@@ -51,30 +75,6 @@ class HostUpdater:
 
     except KeyError:
       raise HostUpdater.BadResponseError()
-
-
-class Host:
-  HOSTS = []
-
-  def __init__(self, *, domain, subdomain):
-    self.domain = domain
-    self.subdomain = subdomain
-
-    self.__class__.HOSTS.append(self)
-
-
-class Domain:
-  DOMAINS = []
-
-  def __init__(self, *, name, password, subdomains):
-    self.name = name
-    self.password = password
-
-    self.hosts = [
-      Host(domain=self, subdomain=subdomain) for subdomain in subdomains
-    ]
-
-    self.__class__.DOMAINS.append(self)
 
 
 def main():
