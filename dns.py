@@ -14,6 +14,9 @@ class Host:
 
     self.__class__.HOSTS.append(self)
 
+  def title(self):
+    return f'{self.domain.name}: {self.subdomain}'
+
 
 class Domain:
   DOMAINS = []
@@ -81,25 +84,25 @@ def main():
   while True:
     for host in Host.HOSTS:
       if config.verbose:
-        print(f'Updating {host.domain.name}: {host.subdomain}')
+        print(f'Updating {host.title()}')
 
       try:
         HostUpdater(host).update_dns()
       except HostUpdater.BadResponseError:
-        print(f'[{host.domain.name}: {host.subdomain}] Bad response')
+        print(f'[{host.title()}] Bad response')
       except HostUpdater.NotDoneError:
-        print(f'[{host.domain.name}: {host.subdomain}] Not updated')
+        print(f'[{host.title()}] Not updated')
       except HostUpdater.RichError as error:
         print(
-          f'[{host.domain.name}: {host.subdomain}] Errors:',
+          f'[{host.title()}] Errors:',
           *(f'  {k}: {v}' for k, v in error.errors.items()),
           sep='\n'
         )
       except Exception:
-        print(f'[{host.domain.name}: {host.subdomain}] Unknown error')
+        print(f'[{host.title()}] Unknown error')
       else:
         if config.verbose:
-          print(f'[{host.domain.name}: {host.subdomain}] Successful!')
+          print(f'[{host.title()}] Successful!')
 
       time.sleep(config.interval)
 
