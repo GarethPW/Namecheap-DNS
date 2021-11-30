@@ -3,7 +3,7 @@ records = (
     'domain': 'example.com',
     'password': 'dnspassword',
     'hosts': ('@', 'www')
-  }
+  },
 )
 
 # Delay between individual requests
